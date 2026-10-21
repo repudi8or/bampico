@@ -29,6 +29,6 @@ folder), edit `GRAFANA_PASSWORD` / `INFLUX_PASSWORD` (the InfluxDB one needs 8+ 
 Leave Docker Desktop running while you want data collected.
 
 ## Trouble
-- **"No data" / discovery failed:** make sure your Pico2 has **Remote access** on (Simarine app)
+- **"No data" / discovery failed:** make sure your Pico2 has **remote mode** on
   and internet. Open the Simarine app once to wake it, then Start again.
 - **Port 3000 busy:** edit `GRAFANA_PORT` in `.env` (e.g. `3001`) and Start again.

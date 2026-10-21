@@ -29,6 +29,6 @@ and run **Start Pico Monitor.bat** again.
 Keep Docker Desktop running while you want data collected.
 
 ## Trouble
-- **"No data" / discovery failed:** ensure your Pico2 has **Remote access** on (Simarine app) and
+- **"No data" / discovery failed:** ensure your Pico2 has **remote mode** on and
   internet. Open the Simarine app once to wake it, then Start again.
 - **Port 3000 busy:** edit `GRAFANA_PORT` in `.env` (e.g. `3001`) and Start again.

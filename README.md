@@ -19,15 +19,15 @@ be involved. Your data stays on your laptop.
 3. **Docker** — Docker Desktop on Mac/Windows, or Docker Engine on Linux.
 
 ## Enable remote (Wi-Fi) mode on your Pico2 — one time
-Bampico needs your Pico online to Simarine's cloud. This is Simarine's own **remote monitoring**
-feature (Pico **Rev. 2** only):
+Bampico needs your Pico online to the internet. This uses the Pico's built-in **remote monitoring**
+mode (Pico **Rev. 2** only):
 
 1. **In the Simarine app:** turn on **experimental features**, then enable **remote monitoring**.
 2. **On the Pico itself:** long-press the **right/menu button (bottom-right, ~5 s)** to open the menu,
    then go to **MENU → WIFI → MODE** and change it from **AP** to **REMOTE**. Select your
    internet-connected Wi-Fi (home, marina, or RV/van router) and enter its password.
 3. Make sure **your phone also has internet**, open the Simarine app, and wait for it to sync — a
-   **green globe icon** appears at the top when the Pico is online to the cloud. That's when Bampico
+   **green globe icon** appears at the top when the Pico is online to the internet. That's when Bampico
    can reach it.
 
 **Pico buttons** (capacitive, below the screen): ◀ left/up · ▼ down / switch screen ·
@@ -65,15 +65,15 @@ them, create a **Slack incoming webhook** and paste its URL into `PICO_SLACK_WEB
 run **Start** again. Without it, the alerts still show inside the dashboard app.
 
 ## If something's wrong
-- **"No data" everywhere / discovery failed:** your Pico2 must be online to Simarine's cloud (remote
-  access on, and it has internet). Open the Simarine app once to wake it, then run **Start** again.
+- **"No data" everywhere / discovery failed:** your Pico2 must be online to the internet (remote
+  mode on). Open the Simarine app once to wake it, then run **Start** again.
 - **Port already in use (3000):** change `GRAFANA_PORT` in `.env` to e.g. `3001` and run **Start** again.
 - **Solar graph empty:** after the first run, open Docker Desktop → the `pico-collector` logs show your
   device names; set `SOLAR_DEVICE` in `.env` to your solar shunt's name.
 
 ## Honest notes
-- This is an **unofficial** tool that reads your own device via Simarine's cloud. A future Simarine
-  update could change things and break it. No warranty.
+- This is an **unofficial** tool that reads your own device over the internet. A future firmware or
+  network change could break it. No warranty.
 - It never changes anything on your Pico — it only reads.
 
 ## First-launch security prompt (one time)

@@ -35,7 +35,7 @@ docker compose pull && docker compose up -d   # update to the latest collector i
 ```
 
 ## Notes
-- Needs your Pico2 online to Simarine's cloud (Remote access on + internet).
+- Needs your Pico2 online to the internet (remote mode on).
 - To re-discover after adding/renaming devices in the Simarine app:
   `docker compose down && docker volume rm bampico_pico-model-data && docker compose up -d`.
 - Running on an always-on server/NAS avoids the gaps you'd get from a laptop sleeping.
