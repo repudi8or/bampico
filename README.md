@@ -10,6 +10,14 @@ be involved. Your data stays on your laptop.
 > The Simarine app only shows **point-in-time** readings. **Bampico** adds **ongoing metrics and
 > graphing** for your devices, straight from the Simarine Pico hardware.
 
+## Screenshots
+
+![Overview — battery state of charge, voltage, current, solar and loads](docs/bampico1.png)
+*Overview: battery state of charge, voltage/current, solar input and loads — all live.*
+
+![Charge health and estimated time to really full](docs/bampico3.png)
+*Charge health — stall detection, solar vs battery, charge phase, and estimated time to really full.*
+
 ---
 
 ## What you need
