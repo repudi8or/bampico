@@ -15,6 +15,9 @@ be involved. Your data stays on your laptop.
 ![Overview — battery state of charge, voltage, current, solar and loads](docs/bampico1.png)
 *Overview: battery state of charge, voltage/current, solar input and loads — all live.*
 
+![Water tanks, temperatures, and the really-full indicator](docs/bampico2.png)
+*Water tanks, temperatures, and the tail-current **BATTERY REALLY FULL?** indicator.*
+
 ![Charge health and estimated time to really full](docs/bampico3.png)
 *Charge health — stall detection, solar vs battery, charge phase, and estimated time to really full.*
 
