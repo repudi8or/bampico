@@ -1,0 +1,85 @@
+# Simarine Pico2 -> InfluxDB -> Grafana, all local on the Mac.
+# Simarine Pico Monitor — double-click "Start Pico Monitor" (see README.md).
+# Manual: cp .env.example .env ; set PICO_SERIAL ; docker compose up -d --build ; open http://localhost:3000
+services:
+  influxdb:
+    image: influxdb:2.7
+    restart: unless-stopped
+    ports:
+      - "${INFLUX_PORT:-8086}:8086"
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - influxdb-config:/etc/influxdb2
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUX_USER}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUX_PASSWORD}
+      DOCKER_INFLUXDB_INIT_ORG: ${INFLUX_ORG}
+      DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUX_BUCKET}
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUX_TOKEN}
+      DOCKER_INFLUXDB_INIT_RETENTION: ${INFLUX_RETENTION}
+    healthcheck:
+      test: ["CMD", "influx", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  grafana:
+    image: grafana/grafana-oss:11.2.0
+    restart: unless-stopped
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      # consumed by the provisioned datasource
+      INFLUX_TOKEN: ${INFLUX_TOKEN}
+      INFLUX_ORG: ${INFLUX_ORG}
+      INFLUX_BUCKET: ${INFLUX_BUCKET}
+      # Slack incoming-webhook URL for the "really full" alert (replace placeholder in .env)
+      PICO_SLACK_WEBHOOK: ${PICO_SLACK_WEBHOOK:-https://hooks.slack.com/services/REPLACE_ME}
+
+  collector:
+    image: ghcr.io/repudi8or/bampico-collector:latest   # prebuilt; pulled, not built
+    restart: unless-stopped
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    volumes:
+      - pico-model-data:/app/data            # auto-discovered model is cached here
+    environment:
+      PICO_SERIAL: ${PICO_SERIAL}            # the ONLY value most users must set
+      MODEL_PATH: /app/data/pico_model.json
+      MQTT_BROKER: ${MQTT_BROKER:-20.0.24.86}
+      MQTT_PORT: ${MQTT_PORT:-1883}
+      POLL_SECONDS: ${POLL_SECONDS:-15}
+      INFLUX_URL: http://influxdb:8086
+      INFLUX_TOKEN: ${INFLUX_TOKEN}
+      INFLUX_ORG: ${INFLUX_ORG}
+      INFLUX_BUCKET: ${INFLUX_BUCKET}
+      # tail-current "truly full" detection (sensible defaults; override in .env if desired)
+      FULL_SOC: ${FULL_SOC:-99}
+      TAIL_CURRENT_A: ${TAIL_CURRENT_A:-4}
+      FULL_HOLD_MIN: ${FULL_HOLD_MIN:-10}
+      RECENT_WINDOW_MIN: ${RECENT_WINDOW_MIN:-20}
+      MIN_FULL_VOLTAGE: ${MIN_FULL_VOLTAGE:-0}
+      SOLAR_ACTIVE_A: ${SOLAR_ACTIVE_A:-5}
+      CHARGE_MIN_A: ${CHARGE_MIN_A:-5}
+      STALL_HOLD_MIN: ${STALL_HOLD_MIN:-15}
+      SOLAR_DEVICE: ${SOLAR_DEVICE:-}        # optional: your solar shunt's name (see logs after first run)
+      BATTERY_CAPACITY_AH: ${BATTERY_CAPACITY_AH:-}   # blank = auto-detect from the Pico
+      ETA_WINDOW_MIN: ${ETA_WINDOW_MIN:-30}
+
+volumes:
+  influxdb-data:
+  influxdb-config:
+  grafana-data:
+  pico-model-data:

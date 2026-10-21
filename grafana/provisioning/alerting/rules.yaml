@@ -1,0 +1,108 @@
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: Pico charge
+    folder: Pico
+    interval: 1m
+    rules:
+      - uid: battery-really-full
+        title: Battery REALLY FULL (tail current reached)
+        condition: C
+        for: 0m
+        noDataState: NoData
+        execErrState: OK
+        labels:
+          severity: info
+          system: pico
+        annotations:
+          summary: "The battery is REALLY FULL — charge current tapered to the tail while SoC=100%."
+        data:
+          - refId: A
+            relativeTimeRange: {from: 300, to: 0}
+            datasourceUid: pico-influx
+            model:
+              refId: A
+              query: |
+                from(bucket: "pico")
+                  |> range(start: -5m)
+                  |> filter(fn: (r) => r._measurement == "charge_state" and r._field == "truly_full")
+                  |> last()
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: reduce
+              expression: A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator: {type: gt, params: [0.5]}
+
+      - uid: battery-low-soc
+        title: Battery LOW (SoC under 30%)
+        condition: C
+        for: 5m
+        noDataState: NoData
+        execErrState: OK
+        labels: {severity: warning, system: pico}
+        annotations:
+          summary: "Battery state of charge is below 30%."
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: pico-influx
+            model:
+              refId: A
+              query: |
+                from(bucket: "pico")
+                  |> range(start: -10m)
+                  |> filter(fn: (r) => r._measurement == "battery" and r._field == "soc_pct")
+                  |> last()
+          - refId: B
+            datasourceUid: __expr__
+            model: {refId: B, type: reduce, expression: A, reducer: last}
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator: {type: lt, params: [30]}
+
+      - uid: battery-charge-stalled
+        title: Charging STALLED (solar producing, battery not filling)
+        condition: C
+        for: 0m
+        noDataState: NoData
+        execErrState: OK
+        labels: {severity: warning, system: pico}
+        annotations:
+          summary: "Solar is producing but the battery isn't charging and isn't full — check for a fault or heavy load."
+        data:
+          - refId: A
+            relativeTimeRange: {from: 300, to: 0}
+            datasourceUid: pico-influx
+            model:
+              refId: A
+              query: |
+                from(bucket: "pico")
+                  |> range(start: -5m)
+                  |> filter(fn: (r) => r._measurement == "charge_state" and r._field == "charge_stalled")
+                  |> last()
+          - refId: B
+            datasourceUid: __expr__
+            model: {refId: B, type: reduce, expression: A, reducer: last}
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator: {type: gt, params: [0.5]}
