@@ -7,13 +7,31 @@ than the percentage) and an estimated **time to really full**.
 It reads your Pico through Simarine's own cloud, so your phone and the Simarine app don't need to
 be involved. Your data stays on your laptop.
 
+> The Simarine app only shows **point-in-time** readings. **Bampico** adds **ongoing metrics and
+> graphing** for your devices, straight from the Simarine Pico hardware.
+
 ---
 
 ## What you need
-1. A **Simarine Pico2** with remote access / cloud enabled (the Simarine app's experimental "Remote
-   access" setting). If the Simarine app can see it when you're away from the boat/van, you're good.
+1. A **Simarine Pico Rev. 2** with **remote (Wi-Fi) mode** enabled — see the one-time setup below.
+   If the Simarine app can see your Pico when you're away from the boat/van, you're good.
 2. Your **Pico2 serial number** — a number shown in the Simarine app / on the device.
 3. **Docker** — Docker Desktop on Mac/Windows, or Docker Engine on Linux.
+
+## Enable remote (Wi-Fi) mode on your Pico2 — one time
+Bampico needs your Pico online to Simarine's cloud. This is Simarine's own **remote monitoring**
+feature (Pico **Rev. 2** only):
+
+1. **In the Simarine app:** turn on **experimental features**, then enable **remote monitoring**.
+2. **On the Pico itself:** long-press the **right/menu button (bottom-right, ~5 s)** to open the menu,
+   then go to **MENU → WIFI → MODE** and change it from **AP** to **REMOTE**. Select your
+   internet-connected Wi-Fi (home, marina, or RV/van router) and enter its password.
+3. Make sure **your phone also has internet**, open the Simarine app, and wait for it to sync — a
+   **green globe icon** appears at the top when the Pico is online to the cloud. That's when Bampico
+   can reach it.
+
+**Pico buttons** (capacitive, below the screen): ◀ left/up · ▼ down / switch screen ·
+▲ up / switch screen · ▶ **menu** (long-press 5 s to open/close the menu; short-press = select).
 
 ## Install — pick your system
 - 🍎 **macOS:** [INSTALL-mac.md](INSTALL-mac.md)
