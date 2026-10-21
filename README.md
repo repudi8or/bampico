@@ -4,7 +4,7 @@ See your Simarine **Pico2**'s battery, solar, tanks and temperatures as live gra
 laptop — including a **"really full"** indicator (based on charge tail-current, far more reliable
 than the percentage) and an estimated **time to really full**.
 
-It reads your Pico through Simarine's own cloud, so your phone and the Simarine app don't need to
+It reads your Pico via the internet, so your phone and the Simarine app don't need to
 be involved. Your data stays on your laptop.
 
 > The Simarine app only shows **point-in-time** readings. **Bampico** adds **ongoing metrics and
